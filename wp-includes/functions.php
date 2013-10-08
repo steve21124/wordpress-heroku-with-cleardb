@@ -1965,6 +1965,11 @@ function wp_get_mime_types() {
 	'odf' => 'application/vnd.oasis.opendocument.formula',
 	// WordPerfect formats
 	'wp|wpd' => 'application/wordperfect',
+	// iWork formats
+	'key' => 'application/vnd.apple.keynote',
+	'numbers' => 'application/vnd.apple.numbers',
+	'pages' => 'application/vnd.apple.pages',
+	'json' => 'application/json',	
 	) );
 }
 /**
