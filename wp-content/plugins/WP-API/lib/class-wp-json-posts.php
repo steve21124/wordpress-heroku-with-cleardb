@@ -259,6 +259,7 @@ class WP_JSON_Posts {
 	
 		return "";
 	}
+	
 	function newMedia( $data ) {
 		global $wpdb;
 		$post_id = $data["post_id"];
@@ -278,7 +279,37 @@ class WP_JSON_Posts {
            'post_status' => 'inherit'
         );
 		$attach_id = wp_insert_attachment( $attachment, null, $post_id );
-  	    $attach_data = wp_generate_attachment_metadata( $attach_id, null );
+  	    //$attach_data = wp_generate_attachment_metadata( $attach_id, null );
+		
+		//hacking attach data by creating it progmatically
+        $attach_data = array(
+           'width' => 478,
+		   'height' => 640,
+           'file' => $wp_filename,
+           'sizes' => array(
+		   		'thumbnail' => array(
+					'file' => $wp_filename,
+					'width' => 150,
+					'height' => 150,
+					'mime-type' => 'image/jpeg'
+				),
+		   		'medium' => array(
+					'file' => $wp_filename,
+					'width' => 150,
+					'height' => 150,
+					'mime-type' => 'image/jpeg'
+				),
+		   		'post-thumbnail' => array(
+					'file' => $wp_filename,
+					'width' => 150,
+					'height' => 150,
+					'mime-type' => 'image/jpeg'
+				)		   
+		   )
+        );
+		
+		error_log("attach data : " . print_r($attach_data, TRUE));
+		
 		wp_update_attachment_metadata( $attach_id, $attach_data );
 		add_post_meta($post_id, $wp_meta, $attach_id);		
 		return $this->getPost( $attach_id );					
@@ -384,7 +415,7 @@ class WP_JSON_Posts {
 		error_log("run runSchedule : " . print_r($url, TRUE));
 		
 	    if ( ! filter_var($url, FILTER_VALIDATE_URL) ) return false;
-	    $remote_file = wp_remote_get( $url );
+	    $remote_file = wp_remote_get( $url,array( 'timeout' => 300 ) );
 		
 		error_log("runSchedule upload parameters  : " . print_r($remote_file, TRUE));
 		
